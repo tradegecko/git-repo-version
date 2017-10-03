@@ -18,7 +18,7 @@ module.exports = function version(shaLength, root) {
     }
   }
 
-  var sha = info.sha || '';
+  var sha = info.sha || process.env.HEROKU_SLUG_COMMIT || '';
   var prefix;
 
   if (packageVersion != null) {
