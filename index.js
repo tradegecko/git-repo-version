@@ -7,7 +7,7 @@ var getGitInfo = require('git-repo-info');
 
 module.exports = function version(shaLength, root) {
   var projectPath = root || process.cwd();
-  var packageVersion  = require(path.join(projectPath, 'package.json')).version;
+  var packageVersion =  require(path.join(projectPath, 'package.json')).version;
   var info = getGitInfo(projectPath);
 
   if (info.tag) {
@@ -20,8 +20,15 @@ module.exports = function version(shaLength, root) {
 
   var sha = info.sha || process.env.HEROKU_SLUG_COMMIT || '';
   var prefix;
+  
+  var releaseVersion = process.env.HEROKU_RELEASE_VERSION;
+  if (releaseVersion) {
+    releaseVersion = releaseVersion.replace(/^v/, '');
+  }
 
-  if (packageVersion != null) {
+  if (packageVersion != null && releaseVersion) {
+    prefix = packageVersion + '-' + releaseVersion;
+  } else if (packageVersion != null) {
     prefix = packageVersion;
   } else if (info.branch) {
     prefix = info.branch;
